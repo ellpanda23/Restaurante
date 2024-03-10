@@ -28,7 +28,6 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
  * App container for Dependency injection.
  */
 interface AppContainer {
-    val itemsRepository: ItemsRepository
     val networkSicenetRepository: SicenetRepository
     val offlineSicenetRepository: SicenetRepository
 }
@@ -53,11 +52,8 @@ class AppDataContainer(private val context: Context) : AppContainer {
         retrofit.create(SicenetApiService::class.java)
     }
     /**
-     * Implementation for [ItemsRepository]
+     * Implementation for [SicenetRepository]
      */
-    override val itemsRepository: ItemsRepository by lazy {
-        OfflineItemsRepository(SicenetDatabase.getDatabase(context).itemDao())
-    }
     override val networkSicenetRepository: NetworkSicenetRepository by lazy {
         NetworkSicenetRepository(retrofitService)
     }

@@ -12,8 +12,8 @@ class LoginViewModel(
     private val offlineSicenetRepository: SicenetRepository
 ) : ViewModel(){
 
-    var matricula by mutableStateOf("")
-    var password by mutableStateOf("")
+    var matricula by mutableStateOf("s20120157")
+    var password by mutableStateOf("8Cj%_e3")
 
     // Actualizar matricula
     fun updateMatricula(value: String){

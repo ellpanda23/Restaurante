@@ -2,6 +2,7 @@ package com.example.inventory.data
 
 import com.example.inventory.model.Alumno
 import com.example.inventory.model.AlumnoDao
+import com.example.inventory.model.Materia
 
 class OfflineSicenetRepository(
     private val alumnoDao: AlumnoDao
@@ -11,6 +12,9 @@ class OfflineSicenetRepository(
     }
 
     override suspend fun getAlumno(): Alumno = alumnoDao.getAlumno()
+    override suspend fun getCarga(): List<Materia> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun insertAlumno(alumno: Alumno) = alumnoDao.insertAlumno(alumno)
 }

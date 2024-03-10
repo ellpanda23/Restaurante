@@ -18,12 +18,12 @@ package com.example.inventory.ui
 
 import android.app.Application
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.inventory.InventoryApplication
 import com.example.inventory.ui.alumno.AlumnoInfoViewModel
+import com.example.inventory.ui.carga.CargaAcademicaViewModel
 import com.example.inventory.ui.home.HomeViewModel
 import com.example.inventory.ui.login.LoginViewModel
 
@@ -48,6 +48,13 @@ object AppViewModelProvider {
 
         initializer {
             AlumnoInfoViewModel(
+                inventoryApplication().container.networkSicenetRepository,
+                inventoryApplication().container.offlineSicenetRepository,
+                inventoryApplication()
+            )
+        }
+        initializer {
+            CargaAcademicaViewModel(
                 inventoryApplication().container.networkSicenetRepository,
                 inventoryApplication().container.offlineSicenetRepository
             )
