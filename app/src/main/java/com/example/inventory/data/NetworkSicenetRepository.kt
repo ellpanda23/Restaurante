@@ -93,7 +93,7 @@ class NetworkSicenetRepository(
         }
     }
 
-    override suspend fun insertAlumno(alumno: Alumno) {
-
+    override suspend fun insertAlumno(alumno: Alumno) : Boolean  {
+        return true
     }
 }

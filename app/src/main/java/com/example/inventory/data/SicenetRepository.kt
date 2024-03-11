@@ -11,5 +11,5 @@ interface SicenetRepository {
 
     suspend fun getCarga(): List<Materia>
 
-    suspend fun insertAlumno(alumno: Alumno)
+    suspend fun insertAlumno(alumno: Alumno) : Boolean
 }

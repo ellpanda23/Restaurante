@@ -3,6 +3,7 @@ package com.example.inventory.ui.alumno
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
@@ -12,7 +13,7 @@ import com.example.inventory.GET_ALUMNO_INFORMATION_WORK_NAME
 import com.example.inventory.TAG_OUTPUT
 import com.example.inventory.data.SicenetRepository
 import com.example.inventory.model.Alumno
-import com.example.inventory.workers.GetAlumnoInfoWorker
+import com.example.inventory.workers.GetAndSaveAlumnoInfoWorker
 
 class AlumnoInfoViewModel(
     private val networkSicenetRepository: SicenetRepository,
@@ -29,10 +30,14 @@ class AlumnoInfoViewModel(
             .beginUniqueWork(
                 GET_ALUMNO_INFORMATION_WORK_NAME,
                 ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(GetAlumnoInfoWorker::class.java)
+                OneTimeWorkRequest.from(GetAndSaveAlumnoInfoWorker::class.java)
             )
 
-        val infoBuilder = OneTimeWorkRequestBuilder<GetAlumnoInfoWorker>()
+        val infoBuilder = OneTimeWorkRequestBuilder<GetAndSaveAlumnoInfoWorker>()
+        val inputData = Data.Builder()
+            .build()
+
+        infoBuilder.setInputData(inputData)
 
         continuation = continuation.then(infoBuilder.build())
 

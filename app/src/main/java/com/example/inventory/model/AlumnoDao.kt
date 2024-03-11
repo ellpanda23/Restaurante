@@ -10,7 +10,7 @@ import com.example.inventory.model.Alumno
 interface AlumnoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAlumno(alumno: Alumno)
+    suspend fun insertAlumno(alumno: Alumno) : Boolean
 
     @Query("SELECT * FROM alumnos")
     suspend fun getAlumno(): Alumno

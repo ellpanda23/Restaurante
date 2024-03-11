@@ -16,5 +16,5 @@ class OfflineSicenetRepository(
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertAlumno(alumno: Alumno) = alumnoDao.insertAlumno(alumno)
+    override suspend fun insertAlumno(alumno: Alumno) : Boolean = alumnoDao.insertAlumno(alumno)
 }
