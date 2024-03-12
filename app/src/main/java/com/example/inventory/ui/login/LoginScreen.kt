@@ -1,6 +1,7 @@
 package com.example.inventory.ui.login
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -103,15 +104,15 @@ fun LoginScreen(
                                 if(viewModel.getAccceso()){
                                     viewModel.updateMatricula("")
                                     viewModel.updatePassword("")
-                                    //viewModel.insertAlumno(viewModel.getAlumno())
                                     navController.navigate(AppScreens.HomeScreen.route)
 
                                 } else {
-
+                                    //ENVIAR ALERTA DE QUE NO SE LOGRO INICIAR SESION
+                                    Log.d("SCREEN", "Entro al else de getAcesso")
                                 }
                             }
                         } else {
-
+                            //MANDAR ALERTA DE QUE NO SE VALIDARON LOS CAMPOS
                         }
                     },
                     shape = RoundedCornerShape(8.dp),

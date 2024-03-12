@@ -82,9 +82,15 @@ class NetworkSicenetRepository(
             val respuestaInfo= sicenetApiService.getCargaAcademica(requestBody).string().split("{","}")
             Log.d("REPOSITORY", respuestaInfo.toString())
             if(respuestaInfo.size>1){
-                for (i in 1 until respuestaInfo.size-1)
-                    materias.add(Gson().fromJson("{"+respuestaInfo[1]+"}", Materia::class.java))
-                Log.d("REPOSITORY", materias.toString())
+                for (i: Int in 1 until respuestaInfo.size-1)
+                {
+                    if(respuestaInfo[i].length > 4)
+                    {
+                        val materia: String = "{"+respuestaInfo[i]+"}"
+                        Log.d("REPOSITORY", materia)
+                    }
+                }
+                    //materias.add(Gson().fromJson("{"+respuestaInfo[i]+"}", Materia::class.java))
                 return materias
             } else
                 return materias

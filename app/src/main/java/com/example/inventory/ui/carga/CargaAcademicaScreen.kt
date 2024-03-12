@@ -15,6 +15,6 @@ fun CargaAcademicaScreen(
 )
 {
     LaunchedEffect(key1 = "CargaAcademica") {
-        Log.d("SCREEN", viewModel.getCarga().toString())
+        viewModel.getCarga()
     }
 }

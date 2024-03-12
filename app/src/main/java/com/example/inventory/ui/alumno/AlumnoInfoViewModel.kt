@@ -1,6 +1,10 @@
 package com.example.inventory.ui.alumno
 
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.work.ExistingWorkPolicy
@@ -12,6 +16,7 @@ import com.example.inventory.GET_ALUMNO_INFORMATION_WORK_NAME
 import com.example.inventory.TAG_OUTPUT
 import com.example.inventory.data.SicenetRepository
 import com.example.inventory.model.Alumno
+import com.example.inventory.ui.NetworkUtils
 import com.example.inventory.workers.GetAlumnoInfoWorker
 
 class AlumnoInfoViewModel(
@@ -20,26 +25,55 @@ class AlumnoInfoViewModel(
     private val application: Application
 ) : ViewModel() {
 
-
     private val workManager = WorkManager.getInstance(application)
     internal val outputWorkInfos: LiveData<List<WorkInfo>> = workManager.getWorkInfosByTagLiveData(TAG_OUTPUT)
     suspend fun getAlumno(): Alumno {
-        // Add WorkRequest to Cleanup temporary images
-        var continuation = workManager
-            .beginUniqueWork(
-                GET_ALUMNO_INFORMATION_WORK_NAME,
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequest.from(GetAlumnoInfoWorker::class.java)
-            )
+        if (isConnected(application))
+        {
+            var continuation = workManager
+                .beginUniqueWork(
+                    GET_ALUMNO_INFORMATION_WORK_NAME,
+                    ExistingWorkPolicy.REPLACE,
+                    OneTimeWorkRequest.from(GetAlumnoInfoWorker::class.java)
+                )
 
-        val infoBuilder = OneTimeWorkRequestBuilder<GetAlumnoInfoWorker>()
+            val infoBuilder = OneTimeWorkRequestBuilder<GetAlumnoInfoWorker>()
 
-        continuation = continuation.then(infoBuilder.build())
+            continuation = continuation.then(infoBuilder.build())
 
-        // Actually start the work
-        continuation.enqueue()
+            // Actually start the work
+            continuation.enqueue()
 
-        return networkSicenetRepository.getAlumno()
+            if(offlineSicenetRepository.getAlumno() == null)
+                return networkSicenetRepository.getAlumno()
+            else
+                return offlineSicenetRepository.getAlumno()
+        }
+        else{
+            return offlineSicenetRepository.getAlumno()
+        }
+
+
     }
-    suspend fun insertAlumno(alumno: Alumno) = offlineSicenetRepository.insertAlumno(alumno)
+
+    fun isConnected(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+        return false
+    }
+
 }

@@ -12,7 +12,7 @@ interface AlumnoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAlumno(alumno: Alumno)
 
-    @Query("SELECT * FROM alumnos")
+    @Query("SELECT * FROM alumnos where matricula = 'S20120157'")
     suspend fun getAlumno(): Alumno
 
 }

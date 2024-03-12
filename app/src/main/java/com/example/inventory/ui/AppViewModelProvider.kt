@@ -42,7 +42,9 @@ object AppViewModelProvider {
         initializer {
             LoginViewModel(
                 inventoryApplication().container.networkSicenetRepository,
-                inventoryApplication().container.offlineSicenetRepository
+                inventoryApplication().container.offlineSicenetRepository,
+                inventoryApplication()
+
             )
         }
 

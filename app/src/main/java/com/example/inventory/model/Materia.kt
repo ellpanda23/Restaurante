@@ -5,14 +5,15 @@ import androidx.room.PrimaryKey
 data class Materia(
     @PrimaryKey(autoGenerate = false)
     val clvOficial: String = "",
-    val observaciones: String = "",
-    val docente: String = "",
-    val jueves: String = "",
-    val miercoles: String = "",
-    val martes: String = "",
-    val lunes: String = "",
-    val viernes: String = "",
-    val estadoMateria: String = "",
-    val materia: String = "",
-    val grupo: String = ""
+    val Observaciones: String = "",
+    val Semipresencial: String = "",
+    val Docente: String = "",
+    val Jueves: String = "",
+    val Miercoles: String = "",
+    val Martes: String = "",
+    val Lunes: String = "",
+    val Viernes: String = "",
+    val EstadoMateria: String = "",
+    val Materia: String = "",
+    val Grupo: String = ""
 )
