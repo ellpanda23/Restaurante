@@ -10,6 +10,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.inventory.InventoryApplication
+import com.example.inventory.MATRICULA_USUARIO
+import com.example.inventory.PASSWORD_USUARIO
 import com.example.inventory.data.SicenetRepository
 import com.example.inventory.model.Alumno
 import com.example.inventory.ui.NetworkUtils
@@ -37,6 +39,8 @@ class LoginViewModel(
 
     suspend fun getAccceso(m: String = matricula, p: String = password): Boolean
     {
+        MATRICULA_USUARIO = m
+        PASSWORD_USUARIO = p
         return if(isConnected(application))
             return networkSicenetRepository.getAcceso(m, p)
         else true
