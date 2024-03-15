@@ -3,12 +3,13 @@ package com.example.inventory.workers
 import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
+import androidx.work.Data
 import androidx.work.WorkerParameters
 import com.example.inventory.InventoryApplication
 import com.example.inventory.MATRICULA_USUARIO
 import com.example.inventory.PASSWORD_USUARIO
 import com.example.inventory.model.Alumno
+import com.google.gson.Gson
 
 class GetAlumnoInfoWorker(
     private val context: Context,
@@ -20,21 +21,27 @@ class GetAlumnoInfoWorker(
 
         val networkSicenetRepository = application.container.networkSicenetRepository
 
-        val offlineSicenetRepository = application.container.offlineSicenetRepository
+        return try {
+            networkSicenetRepository.getAcceso(MATRICULA_USUARIO, PASSWORD_USUARIO)
 
-        // PUTO ERROR ESTA AQUI, SI HAGO OTRA VEZ LA LLAMADA AL GET ACCESO VUELVE A GUARDAR
-        // A JALAR LAS COOKIS Y YA ME DEJA HACER LAS PETICIONES QUE SIGUEN CHINGADAMADRE
-        networkSicenetRepository.getAcceso(MATRICULA_USUARIO, PASSWORD_USUARIO)
-        Log.d("WORKER", MATRICULA_USUARIO)
-        Log.d("WORKER", PASSWORD_USUARIO)
+            val alumno: Alumno = networkSicenetRepository.getAlumno()
 
-        val alumno: Alumno = networkSicenetRepository.getAlumno()
+            Log.d("WORKER", alumno.toString())
 
-        Log.d("WORKER", alumno.toString())
+            val gson = Gson()
+            val alumnoJson = gson.toJson(alumno)
 
-        offlineSicenetRepository.insertAlumno(alumno)
+            val outputData = Data.Builder()
+                .putString("ALUMNO_JSON", alumnoJson)
+                .build()
 
-        return Result.success()
+            return Result.success(outputData)
+        } catch (throwable: Throwable)
+        {
+            return Result.failure()
+        }
+
+        //offlineSicenetRepository.insertAlumno(alumno)
 
     }
 }

@@ -38,8 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.inventory.model.Alumno
 import com.example.inventory.ui.AppViewModelProvider
-import com.example.inventory.ui.login.LoginViewModel
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

@@ -6,20 +6,16 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.example.inventory.GET_ALUMNO_INFORMATION_WORK_NAME
-import com.example.inventory.SAVE_ALUMNO_INFORMATION_WORK_NAME
 import com.example.inventory.TAG_OUTPUT
 import com.example.inventory.data.SicenetRepository
 import com.example.inventory.model.Alumno
-import com.example.inventory.ui.NetworkUtils
-import com.example.inventory.workers.GetAlumnoInfoWorker
-import com.example.inventory.workers.SaveAlumnoWorker
+import com.example.inventory.workers.SaveAlumnoInfoToDataBaseWorker
 
 class AlumnoInfoViewModel(
     private val networkSicenetRepository: SicenetRepository,
@@ -29,15 +25,23 @@ class AlumnoInfoViewModel(
 
     private val workManager = WorkManager.getInstance(application)
     internal val outputWorkInfos: LiveData<List<WorkInfo>> = workManager.getWorkInfosByTagLiveData(TAG_OUTPUT)
+
     suspend fun getAlumno(): Alumno {
         if (isConnected(application))
         {
+            /*
             var continuation = workManager
                 .beginUniqueWork(
                     GET_ALUMNO_INFORMATION_WORK_NAME,
                     ExistingWorkPolicy.REPLACE,
                     OneTimeWorkRequest.from(GetAlumnoInfoWorker::class.java)
                 )
+
+            val saveAlumno = OneTimeWorkRequestBuilder<SaveAlumnoInfoToDataBaseWorker>()
+                .addTag("SAVE_ALUMNO_INFO")
+                .build()
+
+            continuation = continuation.then(saveAlumno)
 
             /*
             TODO("SEPARAR WORKERS UNO PARA JALAR LOS DATOS Y OTRO PARA INSERTAR A DB")
@@ -49,6 +53,31 @@ class AlumnoInfoViewModel(
 
             // Actually start the work
             continuation.enqueue()
+
+             */
+
+            outputWorkInfos.observeForever(object : Observer<List<WorkInfo>> {
+
+                override fun onChanged(workInfoList: List<WorkInfo>) {
+                    if (workInfoList.isNullOrEmpty()) return
+
+                    val workInfo = workInfoList.firstOrNull { it.tags.contains("GET_ALUMNO_INFO") }
+                    if (workInfo != null && workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        val alumnoOutputData: Data = workInfo.outputData // Obtener los datos del alumno del outputData
+
+                        val saveAlumnoRequest = OneTimeWorkRequestBuilder<SaveAlumnoInfoToDataBaseWorker>()
+                            .addTag("SAVE_ALUMNO_INFO")
+                            .setInputData(alumnoOutputData) // Pasar los datos del alumno al SaveAlumnoInfoToDataBaseWorker
+                            .build()
+
+                        // Ejecutar el trabajo del SaveAlumnoInfoToDataBaseWorker
+                        workManager.enqueue(saveAlumnoRequest)
+
+                        // Después de que se complete la operación, deja de observar el LiveData
+                        outputWorkInfos.removeObserver(this)
+                    }
+                }
+            })
 
             if(offlineSicenetRepository.getAlumno() == null)
                 return networkSicenetRepository.getAlumno()
@@ -81,5 +110,7 @@ class AlumnoInfoViewModel(
         }
         return false
     }
+
+
 
 }

@@ -16,12 +16,16 @@
 package com.example.inventory
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Observer
+import androidx.work.WorkInfo
 import com.example.inventory.ui.navigation.AppNavigation
 import com.example.inventory.ui.theme.InventoryTheme
 
